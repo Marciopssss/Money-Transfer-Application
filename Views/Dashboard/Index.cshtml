@@ -1,0 +1,111 @@
+﻿@model SwiftPay.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <!-- Top Bar -->
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Good @Model.TimeOfDay, @Model.FirstName 👋</div>
+            <div class="db-date">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</div>
+        </div>
+        <div class="db-topbar-right">
+            <div class="db-notif" onclick="location.href='@Url.Action("Index","Notifications")'">
+                🔔
+                @if (Model.UnreadNotifications > 0)
+                {
+                    <span class="db-notif-badge">@Model.UnreadNotifications</span>
+                }
+            </div>
+            <div class="db-avatar" title="@Model.FullName">@Model.Initials</div>
+        </div>
+    </div>
+
+    <!-- Balance Card -->
+    <div class="db-balance-card">
+        <div class="db-bal-label">Available Balance</div>
+        <div class="db-bal-amount">@Model.Balance.ToString("C", Model.CultureInfo)</div>
+        <div class="db-bal-acct">Acct # @Model.AccountSerial</div>
+        <div class="db-bal-actions">
+            <a href="@Url.Action("TopUp","Wallet")" class="db-bal-btn primary">+ Add Funds</a>
+            <a href="@Url.Action("Send","Transfer")" class="db-bal-btn secondary">↗ Send Money</a>
+            <a href="@Url.Action("Exchange","Wallet")" class="db-bal-btn secondary">⇄ Exchange</a>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="db-stats">
+        <div class="db-stat">
+            <div class="db-stat-label">Sent this month</div>
+            <div class="db-stat-val down">@Model.MonthlySent.ToString("C", Model.CultureInfo)</div>
+            <div class="db-stat-trend" style="color:#F06060;">
+                @(Model.SentChangePercent > 0 ? "↑" : "↓") @Math.Abs(Model.SentChangePercent)% vs last month
+            </div>
+        </div>
+        <div class="db-stat">
+            <div class="db-stat-label">Received this month</div>
+            <div class="db-stat-val up">@Model.MonthlyReceived.ToString("C", Model.CultureInfo)</div>
+            <div class="db-stat-trend" style="color:#3EC98E;">
+                @(Model.ReceivedChangePercent > 0 ? "↑" : "↓") @Math.Abs(Model.ReceivedChangePercent)% vs last month
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="db-section-title">Quick Actions</div>
+    <div class="db-quick-grid">
+        <a href="@Url.Action("Send","Transfer")" class="db-quick-item">
+            <div class="db-quick-icon">👤</div>
+            <div class="db-quick-label">To Beneficiary</div>
+        </a>
+        <a href="@Url.Action("SendByMobile","Transfer")" class="db-quick-item">
+            <div class="db-quick-icon">📱</div>
+            <div class="db-quick-label">By Mobile</div>
+        </a>
+        <a href="@Url.Action("Exchange","Wallet")" class="db-quick-item">
+            <div class="db-quick-icon">💱</div>
+            <div class="db-quick-label">Convert</div>
+        </a>
+        <a href="@Url.Action("Map","Agents")" class="db-quick-item">
+            <div class="db-quick-icon">🗺</div>
+            <div class="db-quick-label">Find Agent</div>
+        </a>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="db-section-title">Recent Transactions</div>
+    <div class="db-txn-list">
+        <div class="db-txn-head">
+            <span class="db-txn-head-title">Transaction History</span>
+            <a href="@Url.Action("Index","Transactions")" class="db-txn-see-all">See all →</a>
+        </div>
+
+        @foreach (var txn in Model.RecentTransactions)
+        {
+            <div class="db-txn-row">
+                <div class="db-txn-icon @txn.IconClass">@txn.IconSymbol</div>
+                <div class="db-txn-info">
+                    <div class="db-txn-name">@txn.Description</div>
+                    <div class="db-txn-id">@txn.SerialNumber · @txn.Date.ToString("MMM dd")</div>
+                </div>
+                <div>
+                    <div class="db-txn-amount @txn.AmountClass">@txn.FormattedAmount</div>
+                    <div class="db-txn-status">
+                        <span class="db-badge-pill @txn.StatusClass">@txn.Status</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!Model.RecentTransactions.Any())
+        {
+            <div style="text-align:center; padding:2rem; color:#3A4060; font-size:13px;">
+                No transactions yet. <a href="@Url.Action("Send","Transfer")">Make your first transfer →</a>
+            </div>
+        }
+    </div>
+
+}

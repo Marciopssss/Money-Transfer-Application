@@ -1,0 +1,54 @@
+﻿@* File: Views/Shared/_DashboardLayout.cshtml *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiftPay — @ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <nav class="db-sidebar">
+        <div class="db-logo">
+            <div class="db-logo-mark">
+                <svg viewBox="0 0 20 20" fill="white" width="14" height="14">
+                    <path d="M10 2L3 7v6l7 5 7-5V7L10 2zm0 2.5L15 8v4l-5 3.5L5 12V8l5-3.5z" />
+                </svg>
+            </div>
+            <span class="db-logo-name">SWIFT</span>
+        </div>
+
+        <span class="db-nav-label">Main</span>
+        <a asp-controller="Dashboard" asp-action="Index" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Dashboard"   ? "active" : "")"><span class="db-nav-icon">⬡</span> Dashboard</a>
+        <a asp-controller="Transfer" asp-action="Send" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Transfer"    ? "active" : "")"><span class="db-nav-icon">↗</span> Send Money</a>
+        <a asp-controller="Wallet" asp-action="TopUp" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Wallet"      ? "active" : "")"><span class="db-nav-icon">⊕</span> Top Up</a>
+        <a asp-controller="Transactions" asp-action="Index" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Transactions"? "active" : "")"><span class="db-nav-icon">☰</span> Transactions</a>
+        <a asp-controller="Beneficiaries" asp-action="Index" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Beneficiaries"?"active" : "")"><span class="db-nav-icon">♡</span> Beneficiaries</a>
+
+        <span class="db-nav-label">More</span>
+        <a asp-controller="Agents" asp-action="Map" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Agents"      ? "active" : "")"><span class="db-nav-icon">◎</span> Agents Map</a>
+        <a asp-controller="Reviews" asp-action="Index" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reviews"     ? "active" : "")"><span class="db-nav-icon">✦</span> Reviews</a>
+        <a asp-controller="Notifications" asp-action="Index" class="db-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Notifications"?"active" : "")"><span class="db-nav-icon">◈</span> Notifications</a>
+
+        <div class="db-spacer"></div>
+        <a asp-controller="Account" asp-action="Settings" class="db-nav-item"><span class="db-nav-icon">⊙</span> Settings</a>
+        <a asp-controller="Auth" asp-action="Logout" class="db-nav-item" style="color:#F06060;"
+           onclick="document.getElementById('logoutForm').submit(); return false;">
+            <span class="db-nav-icon">←</span> Sign Out
+        </a>
+        <form id="logoutForm" asp-controller="Auth" asp-action="Logout" method="post" style="display:none;">
+            @Html.AntiForgeryToken()
+        </form>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="db-main">
+        @RenderSection("PageContent", required: true)
+    </main>
+
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+</body>
+</html>

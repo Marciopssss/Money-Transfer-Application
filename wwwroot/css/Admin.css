@@ -1,0 +1,428 @@
+﻿/* ===== SwiftPay Admin Styles ===== */
+/* File: wwwroot/css/admin.css      */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #0A0C14;
+    font-family: 'Sora', sans-serif;
+}
+
+/* ─── Admin Sidebar ─── */
+.adm-sidebar {
+    width: 210px;
+    background: #0D0F1A;
+    border-right: 1px solid #1A1E30;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.adm-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 2rem;
+    padding: 0 6px;
+    flex-wrap: wrap;
+}
+
+.adm-logo-mark {
+    width: 28px;
+    height: 28px;
+    background: #FF5F57;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.adm-logo-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #E8EAFF;
+    letter-spacing: 1px;
+}
+
+.adm-logo-badge {
+    background: rgba(255,95,87,0.15);
+    color: #FF5F57;
+    font-size: 9px;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 4px;
+}
+
+.adm-nav-label {
+    font-size: 9px;
+    color: #3A4060;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0 8px;
+    margin-bottom: 5px;
+    margin-top: 1rem;
+}
+
+.adm-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    color: #5A6080;
+    cursor: pointer;
+    margin-bottom: 2px;
+    transition: all .2s;
+    text-decoration: none;
+}
+
+    .adm-nav-item:hover {
+        background: #12162A;
+        color: #9AAAE0;
+    }
+
+    .adm-nav-item.active {
+        background: #1A0F0F;
+        color: #FF7A72;
+    }
+
+.adm-nav-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid currentColor;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    flex-shrink: 0;
+}
+
+.adm-nav-badge {
+    background: rgba(255,180,50,0.15);
+    color: #FFB432;
+    font-size: 9px;
+    border-radius: 10px;
+    padding: 1px 6px;
+    margin-left: auto;
+}
+
+.adm-spacer {
+    flex: 1;
+}
+
+/* ─── Main content ─── */
+.adm-main {
+    margin-left: 210px;
+    padding: 1.8rem;
+    min-height: 100vh;
+}
+
+/* ─── Top bar ─── */
+.adm-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.8rem;
+}
+
+.adm-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: #D0D6F0;
+}
+
+.adm-sub {
+    font-size: 12px;
+    color: #3A4060;
+    margin-top: 2px;
+}
+
+.adm-btn-outline {
+    background: #111420;
+    border: 1px solid #1E2236;
+    color: #7A83A8;
+    font-family: 'Sora',sans-serif;
+    font-size: 11px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.adm-btn-primary {
+    background: linear-gradient(135deg,#FF5F57,#FF8E53);
+    border: none;
+    color: white;
+    font-family: 'Sora',sans-serif;
+    font-size: 11px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* ─── KPI Cards ─── */
+.adm-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+    margin-bottom: 1.8rem;
+}
+
+.adm-kpi {
+    background: #111420;
+    border: 1px solid #1A1E30;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+}
+
+.adm-kpi-label {
+    font-size: 10px;
+    color: #3A4060;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+}
+
+.adm-kpi-val {
+    font-family: 'Space Mono', monospace;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 3px;
+}
+
+.adm-kpi-trend {
+    font-size: 10px;
+}
+
+/* ─── Two-column ─── */
+.adm-two-col {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 16px;
+    margin-bottom: 1.8rem;
+}
+
+.adm-box {
+    background: #111420;
+    border: 1px solid #1A1E30;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.adm-box-head {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #1A1E30;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.adm-box-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #C8D0EC;
+}
+
+.adm-box-action {
+    font-size: 11px;
+    color: #4F8EF7;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* ─── Agent rows ─── */
+.adm-agent-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 1.2rem;
+    border-bottom: 1px solid #141728;
+    gap: 12px;
+}
+
+    .adm-agent-row:last-child {
+        border-bottom: none;
+    }
+
+.adm-agent-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.adm-agent-info {
+    flex: 1;
+}
+
+.adm-agent-name {
+    font-size: 12px;
+    color: #C8D0EC;
+    font-weight: 500;
+}
+
+.adm-agent-loc {
+    font-size: 10px;
+    color: #3A4060;
+    margin-top: 2px;
+}
+
+.adm-btn-approve {
+    background: rgba(62,201,142,0.1);
+    border: 1px solid rgba(62,201,142,0.25);
+    color: #3EC98E;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Sora', sans-serif;
+    margin-left: 6px;
+}
+
+.adm-btn-reject {
+    background: rgba(240,96,96,0.1);
+    border: 1px solid rgba(240,96,96,0.25);
+    color: #F06060;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Sora', sans-serif;
+}
+
+/* ─── Commission rows ─── */
+.adm-comm-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 1.2rem;
+    border-bottom: 1px solid #141728;
+    gap: 12px;
+}
+
+    .adm-comm-row:last-child {
+        border-bottom: none;
+    }
+
+.adm-comm-currency {
+    font-size: 12px;
+    color: #C8D0EC;
+    font-weight: 500;
+    flex: 1;
+}
+
+.adm-comm-rate {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: #7B9FFF;
+}
+
+.adm-comm-edit {
+    font-size: 10px;
+    color: #4A5070;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* ─── Full transaction table ─── */
+.adm-full-box {
+    background: #111420;
+    border: 1px solid #1A1E30;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.adm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+    .adm-table th {
+        padding: 10px 1.2rem;
+        text-align: left;
+        font-size: 10px;
+        color: #3A4060;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border-bottom: 1px solid #1A1E30;
+        font-weight: 500;
+    }
+
+    .adm-table td {
+        padding: 10px 1.2rem;
+        color: #9AAAC8;
+        border-bottom: 1px solid #141728;
+        vertical-align: middle;
+    }
+
+    .adm-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .adm-table tr:hover td {
+        background: #12162A;
+    }
+
+.adm-txn-id {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #3A5080;
+}
+
+.adm-amount-pos {
+    color: #3EC98E;
+    font-family: 'Space Mono', monospace;
+}
+
+.adm-amount-neg {
+    color: #F06060;
+    font-family: 'Space Mono', monospace;
+}
+
+/* ─── Pills ─── */
+.adm-pill {
+    font-size: 9px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+    .adm-pill.approve {
+        background: rgba(62,201,142,0.12);
+        color: #3EC98E;
+    }
+
+    .adm-pill.pending {
+        background: rgba(255,180,50,0.12);
+        color: #FFB432;
+    }
+
+    .adm-pill.rejected {
+        background: rgba(240,96,96,0.12);
+        color: #F06060;
+    }

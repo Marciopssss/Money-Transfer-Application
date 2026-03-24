@@ -1,0 +1,57 @@
+﻿@* File: Views/Shared/_AdminLayout.cshtml *@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SwiftPay Admin — @ViewData["Title"]</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- Admin Sidebar -->
+    <nav class="adm-sidebar">
+        <div class="adm-logo">
+            <div class="adm-logo-mark">A</div>
+            <span class="adm-logo-name">SWIFT <span class="adm-logo-badge">ADMIN</span></span>
+        </div>
+
+        <span class="adm-nav-label">Overview</span>
+        <a asp-controller="Admin" asp-action="Index" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active":"")"><div class="adm-nav-dot">●</div> Dashboard</a>
+        <a asp-controller="Admin" asp-action="Transactions" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Transactions" ? "active":"")"><div class="adm-nav-dot">○</div> Transactions</a>
+        <a asp-controller="Admin" asp-action="Users" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Users" ? "active":"")"><div class="adm-nav-dot">○</div> Users</a>
+
+        <span class="adm-nav-label">Management</span>
+        <a asp-controller="Admin" asp-action="Agents" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Agents" ? "active":"")">
+            <div class="adm-nav-dot">○</div> Agent Approvals
+            @if (ViewBag.PendingAgents > 0)
+            {
+                <span class="adm-nav-badge">@ViewBag.PendingAgents</span>
+            }
+        </a>
+        <a asp-controller="Admin" asp-action="Commissions" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Commissions" ? "active":"")"><div class="adm-nav-dot">○</div> Commissions</a>
+        <a asp-controller="Admin" asp-action="Currencies" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Currencies" ? "active":"")"><div class="adm-nav-dot">○</div> Currencies</a>
+
+        <span class="adm-nav-label">Analytics</span>
+        <a asp-controller="Admin" asp-action="Reports" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Reports" ? "active":"")"><div class="adm-nav-dot">○</div> Reports</a>
+        <a asp-controller="Admin" asp-action="Feedback" class="adm-nav-item @(ViewContext.RouteData.Values["action"]?.ToString() == "Feedback" ? "active":"")"><div class="adm-nav-dot">○</div> Feedback</a>
+
+        <div class="adm-spacer"></div>
+        <a asp-controller="Auth" asp-action="Logout" class="adm-nav-item" style="color:#F06060;"
+           onclick="document.getElementById('adminLogout').submit(); return false;">
+            <div class="adm-nav-dot">○</div> Sign Out
+        </a>
+        <form id="adminLogout" asp-controller="Auth" asp-action="Logout" method="post" style="display:none;">
+            @Html.AntiForgeryToken()
+        </form>
+    </nav>
+
+    <!-- Page Content -->
+    <main class="adm-main">
+        @RenderSection("PageContent", required: true)
+    </main>
+
+    <script src="~/js/admin.js" asp-append-version="true"></script>
+</body>
+</html>

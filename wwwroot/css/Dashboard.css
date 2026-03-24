@@ -1,0 +1,461 @@
+﻿/* ===== SwiftPay Dashboard Styles ===== */
+/* File: wwwroot/css/dashboard.css        */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #0A0C14;
+    font-family: 'Sora', sans-serif;
+}
+
+/* ─── Sidebar ─── */
+.db-sidebar {
+    width: 220px;
+    background: #0D0F1A;
+    border-right: 1px solid #1A1E30;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 100;
+}
+
+.db-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 2.5rem;
+    padding: 0 6px;
+}
+
+.db-logo-mark {
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg,#4F8EF7,#7B5FFF);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .db-logo-mark svg {
+        width: 14px;
+        height: 14px;
+        fill: white;
+    }
+
+.db-logo-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: #E8EAFF;
+    letter-spacing: 1px;
+}
+
+.db-nav-label {
+    font-size: 9px;
+    color: #3A4060;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 0 8px;
+    margin-bottom: 6px;
+    margin-top: 1.2rem;
+}
+
+.db-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 9px;
+    font-size: 13px;
+    color: #5A6080;
+    cursor: pointer;
+    margin-bottom: 2px;
+    transition: all .2s;
+    text-decoration: none;
+}
+
+    .db-nav-item:hover {
+        background: #12162A;
+        color: #9AAAE0;
+    }
+
+    .db-nav-item.active {
+        background: #151A30;
+        color: #7B9FFF;
+    }
+
+.db-nav-icon {
+    width: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.db-spacer {
+    flex: 1;
+}
+
+/* ─── Main content ─── */
+.db-main {
+    margin-left: 220px;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+/* ─── Top bar ─── */
+.db-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.db-greeting {
+    font-size: 18px;
+    font-weight: 600;
+    color: #D0D6F0;
+}
+
+.db-date {
+    font-size: 12px;
+    color: #3A4060;
+    margin-top: 2px;
+}
+
+.db-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.db-notif {
+    width: 34px;
+    height: 34px;
+    background: #111420;
+    border: 1px solid #1E2236;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    position: relative;
+}
+
+.db-notif-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: #F06060;
+    color: white;
+    font-size: 9px;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.db-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: linear-gradient(135deg,#4F8EF7,#7B5FFF);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+}
+
+/* ─── Balance card ─── */
+.db-balance-card {
+    background: linear-gradient(135deg, #151A35 0%, #1A1040 100%);
+    border: 1px solid #2A2E50;
+    border-radius: 16px;
+    padding: 1.8rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.db-bal-label {
+    font-size: 11px;
+    color: #5A6080;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    margin-bottom: 8px;
+}
+
+.db-bal-amount {
+    font-family: 'Space Mono', monospace;
+    font-size: 32px;
+    color: #E8EAFF;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.db-bal-acct {
+    font-size: 12px;
+    color: #3A4570;
+    font-family: 'Space Mono', monospace;
+}
+
+.db-bal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.5rem;
+}
+
+.db-bal-btn {
+    flex: 1;
+    padding: 9px 0;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    font-family: 'Sora', sans-serif;
+    transition: opacity .2s;
+    text-decoration: none;
+    display: block;
+    border: none;
+}
+
+    .db-bal-btn.primary {
+        background: linear-gradient(135deg,#4F8EF7,#7B5FFF);
+        color: white;
+    }
+
+    .db-bal-btn.secondary {
+        background: #1A1E34;
+        border: 1px solid #2A2E50;
+        color: #7B9FFF;
+    }
+
+    .db-bal-btn:hover {
+        opacity: 0.85;
+    }
+
+/* ─── Stats ─── */
+.db-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.db-stat {
+    background: #111420;
+    border: 1px solid #1A1E30;
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+}
+
+.db-stat-label {
+    font-size: 11px;
+    color: #3A4060;
+    margin-bottom: 5px;
+}
+
+.db-stat-val {
+    font-size: 18px;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+}
+
+    .db-stat-val.up {
+        color: #3EC98E;
+    }
+
+    .db-stat-val.down {
+        color: #F06060;
+    }
+
+.db-stat-trend {
+    font-size: 10px;
+    margin-top: 3px;
+}
+
+/* ─── Section title ─── */
+.db-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #7A83A8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+/* ─── Quick actions ─── */
+.db-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+    margin-bottom: 1.8rem;
+}
+
+.db-quick-item {
+    background: #111420;
+    border: 1px solid #1A1E30;
+    border-radius: 12px;
+    padding: 1rem 0.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s;
+    text-decoration: none;
+}
+
+    .db-quick-item:hover {
+        border-color: #3A4570;
+    }
+
+.db-quick-icon {
+    font-size: 20px;
+    margin-bottom: 6px;
+}
+
+.db-quick-label {
+    font-size: 11px;
+    color: #5A6080;
+}
+
+/* ─── Transactions ─── */
+.db-txn-list {
+    background: #111420;
+    border: 1px solid #1A1E30;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.db-txn-head {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #1A1E30;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.db-txn-head-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #C8D0EC;
+}
+
+.db-txn-see-all {
+    font-size: 11px;
+    color: #4F8EF7;
+    text-decoration: none;
+}
+
+.db-txn-row {
+    display: flex;
+    align-items: center;
+    padding: 12px 1.2rem;
+    border-bottom: 1px solid #141728;
+    gap: 12px;
+}
+
+    .db-txn-row:last-child {
+        border-bottom: none;
+    }
+
+.db-txn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+}
+
+    .db-txn-icon.send {
+        background: rgba(240,96,96,0.12);
+    }
+
+    .db-txn-icon.recv {
+        background: rgba(62,201,142,0.12);
+    }
+
+    .db-txn-icon.topup {
+        background: rgba(79,142,247,0.12);
+    }
+
+.db-txn-info {
+    flex: 1;
+}
+
+.db-txn-name {
+    font-size: 13px;
+    color: #C8D0EC;
+    font-weight: 500;
+}
+
+.db-txn-id {
+    font-size: 10px;
+    color: #3A4060;
+    font-family: 'Space Mono', monospace;
+    margin-top: 2px;
+}
+
+.db-txn-amount {
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Space Mono', monospace;
+}
+
+    .db-txn-amount.send {
+        color: #F06060;
+    }
+
+    .db-txn-amount.recv {
+        color: #3EC98E;
+    }
+
+    .db-txn-amount.topup {
+        color: #4F8EF7;
+    }
+
+.db-txn-status {
+    font-size: 10px;
+    color: #3A4060;
+    text-align: right;
+    margin-top: 3px;
+}
+
+.db-badge-pill {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 20px;
+    display: inline-block;
+    font-weight: 600;
+}
+
+    .db-badge-pill.completed {
+        background: rgba(62,201,142,0.12);
+        color: #3EC98E;
+    }
+
+    .db-badge-pill.pending {
+        background: rgba(255,180,50,0.12);
+        color: #FFB432;
+    }
+
+    .db-badge-pill.failed {
+        background: rgba(240,96,96,0.12);
+        color: #F06060;
+    }

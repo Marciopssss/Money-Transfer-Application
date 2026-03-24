@@ -1,0 +1,141 @@
+﻿@model SwiftPay.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@section PageContent {
+
+    <!-- Top Bar -->
+    <div class="adm-topbar">
+        <div>
+            <div class="adm-heading">Admin Dashboard</div>
+            <div class="adm-sub">SwiftPay Control Center · @DateTime.Now.ToString("MMMM yyyy")</div>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <a href="@Url.Action("ExportReport","Admin")" class="adm-btn-outline">Export Report</a>
+            <a href="@Url.Action("AddCurrency","Admin")" class="adm-btn-primary">+ Add Currency</a>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="adm-kpi-grid">
+        <div class="adm-kpi">
+            <div class="adm-kpi-label">Total Volume</div>
+            <div class="adm-kpi-val" style="color:#E8EAFF;">@Model.TotalVolume.ToString("C0")</div>
+            <div class="adm-kpi-trend" style="color:#3EC98E;">↑ @Model.VolumeChangePercent% this month</div>
+        </div>
+        <div class="adm-kpi">
+            <div class="adm-kpi-label">Active Users</div>
+            <div class="adm-kpi-val" style="color:#7B9FFF;">@Model.ActiveUsers.ToString("N0")</div>
+            <div class="adm-kpi-trend" style="color:#3EC98E;">↑ @Model.NewUsersThisMonth new users</div>
+        </div>
+        <div class="adm-kpi">
+            <div class="adm-kpi-label">Active Agents</div>
+            <div class="adm-kpi-val" style="color:#FFB432;">@Model.ActiveAgents</div>
+            <div class="adm-kpi-trend" style="color:#FFB432;">@Model.PendingAgents pending approval</div>
+        </div>
+        <div class="adm-kpi">
+            <div class="adm-kpi-label">Commission Earned</div>
+            <div class="adm-kpi-val" style="color:#3EC98E;">@Model.TotalCommission.ToString("C0")</div>
+            <div class="adm-kpi-trend" style="color:#3EC98E;">↑ @Model.CommissionChangePercent% vs last month</div>
+        </div>
+    </div>
+
+    <!-- Two-column section: Agent Approvals + Commission Rates -->
+    <div class="adm-two-col">
+
+        <!-- Pending Agent Approvals -->
+        <div class="adm-box">
+            <div class="adm-box-head">
+                <span class="adm-box-title">Pending Agent Approvals</span>
+                <a href="@Url.Action("Agents","Admin")" class="adm-box-action">View all</a>
+            </div>
+
+            @foreach (var agent in Model.PendingAgentRequests)
+            {
+                <div class="adm-agent-row">
+                    <div class="adm-agent-avatar" style="background:rgba(79,142,247,0.15); color:#7B9FFF;">
+                        @agent.Initials
+                    </div>
+                    <div class="adm-agent-info">
+                        <div class="adm-agent-name">@agent.StoreName</div>
+                        <div class="adm-agent-loc">@agent.Location · Applied @agent.AppliedDate.ToString("MMM dd, yyyy")</div>
+                    </div>
+                    <form asp-action="ApproveAgent" asp-controller="Admin" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="agentId" value="@agent.Id" />
+                        <button type="submit" class="adm-btn-approve">Approve</button>
+                    </form>
+                    <form asp-action="RejectAgent" asp-controller="Admin" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="agentId" value="@agent.Id" />
+                        <button type="submit" class="adm-btn-reject">Reject</button>
+                    </form>
+                </div>
+            }
+
+            @if (!Model.PendingAgentRequests.Any())
+            {
+                <div style="text-align:center; padding:1.5rem; color:#3A4060; font-size:12px;">No pending approvals</div>
+            }
+        </div>
+
+        <!-- Commission Rates -->
+        <div class="adm-box">
+            <div class="adm-box-head">
+                <span class="adm-box-title">Commission Rates</span>
+                <a href="@Url.Action("Commissions","Admin")" class="adm-box-action">Edit all</a>
+            </div>
+
+            @foreach (var rate in Model.CommissionRates)
+            {
+                <div class="adm-comm-row">
+                    <span class="adm-comm-currency">@rate.FromFlag @rate.FromCurrency → @rate.ToCurrency</span>
+                    <span class="adm-comm-rate">@rate.Rate.ToString("0.0")%</span>
+                    <a href="@Url.Action("EditCommission","Admin", new { id = rate.Id })" class="adm-comm-edit">✎</a>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Full-width Transaction Table -->
+    <div class="adm-full-box">
+        <div class="adm-box-head">
+            <span class="adm-box-title">Recent Platform Transactions</span>
+            <a href="@Url.Action("ExportTransactions","Admin")" class="adm-box-action">Export CSV</a>
+        </div>
+        <table class="adm-table">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>User</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Currency Pair</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var txn in Model.RecentTransactions)
+                {
+                    <tr>
+                        <td><span class="adm-txn-id">@txn.SerialNumber</span></td>
+                        <td>@txn.UserFullName</td>
+                        <td>@txn.Type</td>
+                        <td>
+                            <span class="@(txn.Amount >= 0 ? "adm-amount-pos" : "adm-amount-neg")">
+                                @txn.FormattedAmount
+                            </span>
+                        </td>
+                        <td style="color:#3A5080;">@txn.CurrencyPair</td>
+                        <td><span class="adm-pill @txn.StatusClass">@txn.Status</span></td>
+                        <td style="color:#3A4060;">@txn.Date.ToString("MMM dd")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+}
