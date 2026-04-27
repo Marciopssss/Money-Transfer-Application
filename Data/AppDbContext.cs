@@ -126,13 +126,13 @@ namespace SwiftPay.Data
                 new Currency { Id = 6, Code = "SAR", Name = "Saudi Riyal", Symbol = "﷼", Flag = "🇸🇦", IsActive = true }
             );
 
-            // ── Seed default commission rates ────────────────────
+            // ── Seed default commission rates ────────────────────────────────────
             builder.Entity<CommissionRate>().HasData(
-                new CommissionRate { Id = 1, FromCurrency = "USD", ToCurrency = "EUR", Rate = 1.8m },
-                new CommissionRate { Id = 2, FromCurrency = "USD", ToCurrency = "LBP", Rate = 2.2m },
-                new CommissionRate { Id = 3, FromCurrency = "EUR", ToCurrency = "GBP", Rate = 1.5m },
-                new CommissionRate { Id = 4, FromCurrency = "AED", ToCurrency = "USD", Rate = 1.9m },
-                new CommissionRate { Id = 5, FromCurrency = "SAR", ToCurrency = "EUR", Rate = 2.0m }
+                new CommissionRate { Id = 1, FromCurrency = "USD", ToCurrency = "EUR", Rate = 1.8m, UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new CommissionRate { Id = 2, FromCurrency = "USD", ToCurrency = "LBP", Rate = 2.2m, UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new CommissionRate { Id = 3, FromCurrency = "EUR", ToCurrency = "GBP", Rate = 1.5m, UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new CommissionRate { Id = 4, FromCurrency = "AED", ToCurrency = "USD", Rate = 1.9m, UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) },
+                new CommissionRate { Id = 5, FromCurrency = "SAR", ToCurrency = "EUR", Rate = 2.0m, UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
             );
         }
     }

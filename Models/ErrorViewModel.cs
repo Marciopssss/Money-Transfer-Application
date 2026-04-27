@@ -1,4 +1,4 @@
-namespace Money_Trasnfer_Application.Models
+namespace SwiftPay.Models
 {
     public class ErrorViewModel
     {

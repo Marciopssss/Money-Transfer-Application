@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Money_Trasnfer_Application.Models;
+using SwiftPay.Models;
 
-namespace Money_Trasnfer_Application.Controllers
+namespace SwiftPay.Controllers
 {
     public class HomeController : Controller
     {
