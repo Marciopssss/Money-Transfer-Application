@@ -6,7 +6,6 @@
 
 @section PageContent {
 
-    <!-- Top Bar -->
     <div class="db-topbar">
         <div>
             <div class="db-greeting">Good @Model.TimeOfDay, @Model.FirstName 👋</div>
@@ -24,7 +23,6 @@
         </div>
     </div>
 
-    <!-- Balance Card -->
     <div class="db-balance-card">
         <div class="db-bal-label">Available Balance</div>
         <div class="db-bal-amount">@Model.Balance.ToString("C", Model.CultureInfo)</div>
@@ -36,7 +34,6 @@
         </div>
     </div>
 
-    <!-- Stats Row -->
     <div class="db-stats">
         <div class="db-stat">
             <div class="db-stat-label">Sent this month</div>
@@ -54,7 +51,6 @@
         </div>
     </div>
 
-    <!-- Quick Actions -->
     <div class="db-section-title">Quick Actions</div>
     <div class="db-quick-grid">
         <a href="@Url.Action("Send","Transfer")" class="db-quick-item">
@@ -75,7 +71,6 @@
         </a>
     </div>
 
-    <!-- Recent Transactions -->
     <div class="db-section-title">Recent Transactions</div>
     <div class="db-txn-list">
         <div class="db-txn-head">

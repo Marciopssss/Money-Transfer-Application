@@ -1,9 +1,7 @@
-﻿// File: ViewModels/AdminDashboardViewModel.cs
-namespace SwiftPay.ViewModels
+﻿namespace SwiftPay.ViewModels
 {
     public class AdminDashboardViewModel
     {
-        // KPI Cards
         public decimal TotalVolume { get; set; }
         public int VolumeChangePercent { get; set; }
         public int ActiveUsers { get; set; }
@@ -13,13 +11,10 @@ namespace SwiftPay.ViewModels
         public decimal TotalCommission { get; set; }
         public int CommissionChangePercent { get; set; }
 
-        // Pending agent approvals
         public List<AgentRequestViewModel> PendingAgentRequests { get; set; } = new();
 
-        // Commission rates
         public List<CommissionRateViewModel> CommissionRates { get; set; } = new();
 
-        // Recent transactions
         public List<AdminTransactionViewModel> RecentTransactions { get; set; } = new();
     }
 
@@ -50,7 +45,7 @@ namespace SwiftPay.ViewModels
         public string FormattedAmount { get; set; } = string.Empty;
         public string CurrencyPair { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-        public string StatusClass { get; set; } = string.Empty;  // approve / pending / rejected
+        public string StatusClass { get; set; } = string.Empty;  
         public DateTime Date { get; set; }
     }
 }

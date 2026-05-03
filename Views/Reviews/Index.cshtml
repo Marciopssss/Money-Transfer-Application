@@ -1,0 +1,73 @@
+﻿@* File: Views/Reviews/Index.cshtml *@
+@model List<SwiftPay.Models.Review>
+@{
+    ViewData["Title"] = "Reviews";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Reviews</div>
+            <div class="db-date">⭐ @ViewBag.AverageRating / 5 · @ViewBag.TotalReviews reviews</div>
+        </div>
+        <a href="@Url.Action("Add")" class="ft-btn" style="width:auto;padding:10px 20px;">+ Write Review</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="background:rgba(62,201,142,0.08);border:1px solid rgba(62,201,142,0.2);border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;color:#3EC98E;font-size:13px;">
+            ✅ @TempData["Success"]
+        </div>
+    }
+
+    <!-- Rating summary -->
+    <div style="background:#111420;border:1px solid #1A1E30;border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:2rem;">
+        <div style="text-align:center;">
+            <div style="font-size:48px;font-weight:700;color:#E8EAFF;font-family:'Space Mono',monospace;">@ViewBag.AverageRating</div>
+            <div style="color:#FFB432;font-size:20px;margin:4px 0;">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <span>@(i <= (int)ViewBag.AverageRating ? "★" : "☆")</span>
+                }
+            </div>
+            <div style="font-size:12px;color:#3A4060;">@ViewBag.TotalReviews reviews</div>
+        </div>
+    </div>
+
+    <!-- Reviews list -->
+    <div class="db-txn-list">
+        @if (!Model.Any())
+        {
+            <div style="text-align:center;padding:3rem;color:#3A4060;font-size:13px;">
+                No reviews yet. <a href="@Url.Action("Add")" style="color:#4F8EF7;">Be the first →</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var r in Model)
+            {
+                <div class="db-txn-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:12px;width:100%;">
+                        <div class="db-txn-icon recv" style="font-size:12px;font-weight:700;">
+                            @r.User.FirstName.Substring(0, 1)@r.User.LastName.Substring(0, 1)
+                        </div>
+                        <div style="flex:1;">
+                            <div class="db-txn-name">@r.User.FullName</div>
+                            <div class="db-txn-id">@r.CreatedAt.ToString("MMM dd, yyyy")</div>
+                        </div>
+                        <div style="color:#FFB432;font-size:16px;">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span>@(i <= r.Rating ? "★" : "☆")</span>
+                            }
+                        </div>
+                    </div>
+                    <div style="font-size:13px;color:#9AAAC8;padding-left:48px;">@r.Comment</div>
+                </div>
+            }
+        }
+    </div>
+
+}

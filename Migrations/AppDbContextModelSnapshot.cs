@@ -8,7 +8,7 @@ using SwiftPay.Data;
 
 #nullable disable
 
-namespace Money_Trasnfer_Application.Migrations
+namespace SwiftPay.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot

@@ -1,0 +1,103 @@
+﻿@* File: Views/Agents/Register.cshtml *@
+@model SwiftPay.ViewModels.RegisterAgentViewModel
+@{
+    ViewData["Title"] = "Become an Agent";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Become an Agent</div>
+            <div class="db-date">Register your store to send & receive money on behalf of users</div>
+        </div>
+    </div>
+
+    <div style="max-width:500px;">
+        <form method="post" action="/Agents/Register">
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div style="background:rgba(240,96,96,0.08);border:1px solid rgba(240,96,96,0.2);border-radius:10px;padding:12px 14px;margin-bottom:1.5rem;color:#F06060;font-size:13px;">
+                    <asp-validation-summary asp-validation-type="All" />
+                </div>
+            }
+
+            <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+
+                <label class="ft-label">Store / Business Name *</label>
+                <input name="StoreName" class="send-input" type="text" placeholder="e.g. Khalil Money Exchange" />
+
+                <label class="ft-label">Location / Address *</label>
+                <input name="Location" class="send-input" type="text" placeholder="e.g. Hamra, Beirut" id="location-input" />
+
+                <label class="ft-label">Working Hours *</label>
+                <input name="WorkingHours" class="send-input" type="text" placeholder="e.g. Mon-Fri 9AM-6PM" />
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ft-label">Latitude</label>
+                        <input name="Latitude" id="lat-input" class="send-input" type="number" step="any" placeholder="33.8938" />
+                    </div>
+                    <div>
+                        <label class="ft-label">Longitude</label>
+                        <input name="Longitude" id="lng-input" class="send-input" type="number" step="any" placeholder="35.5018" />
+                    </div>
+                </div>
+
+                <button type="button" onclick="getLocation()"
+                        style="background:#0D0F1A;border:1px solid #1E2236;border-radius:9px;padding:9px 16px;color:#7B9FFF;font-family:'Sora',sans-serif;font-size:12px;cursor:pointer;margin-bottom:1.2rem;width:100%;">
+                    📍 Use My Current Location
+                </button>
+
+                <div style="background:#0D0F1A;border:1px solid #1E2236;border-radius:10px;padding:10px 14px;">
+                    <div style="font-size:11px;color:#3A4060;">⚠️ Your registration will be reviewed by an admin before activation. You will receive a notification once approved.</div>
+                </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button type="submit" class="ft-btn">Submit Registration</button>
+                <a href="@Url.Action("Map")" class="ft-btn" style="background:#1A1E34;border:1px solid #2A2E50;color:#7B9FFF;text-align:center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        .send-input {
+            width: 100%;
+            background: #0D0F1A;
+            border: 1px solid #1E2236;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #C8CEEA;
+            font-family: 'Sora',sans-serif;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 1.2rem;
+            transition: border-color .2s;
+            box-sizing: border-box;
+        }
+
+            .send-input:focus {
+                border-color: #4F8EF7;
+            }
+
+            .send-input::placeholder {
+                color: #3A4060;
+            }
+    </style>
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    document.getElementById('lat-input').value = pos.coords.latitude.toFixed(6);
+                    document.getElementById('lng-input').value = pos.coords.longitude.toFixed(6);
+                });
+            }
+        }
+    </script>
+
+}

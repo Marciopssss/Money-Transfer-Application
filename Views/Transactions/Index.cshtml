@@ -1,0 +1,92 @@
+﻿@* File: Views/Transactions/Index.cshtml *@
+@model SwiftPay.ViewModels.TransactionHistoryViewModel
+@{
+    ViewData["Title"] = "Transaction History";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Transaction History</div>
+            <div class="db-date">All your past transfers and top-ups</div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div style="display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;">
+        <a href="@Url.Action("Index")" class="filter-pill @(Model.StatusFilter == null && Model.TypeFilter == null ? "active" : "")">All</a>
+        <a href="@Url.Action("Index", new { status = "Completed" })" class="filter-pill @(Model.StatusFilter == "Completed" ? "active" : "")">✅ Completed</a>
+        <a href="@Url.Action("Index", new { status = "Pending" })" class="filter-pill @(Model.StatusFilter == "Pending" ? "active" : "")">⏳ Pending</a>
+        <a href="@Url.Action("Index", new { status = "Failed" })" class="filter-pill @(Model.StatusFilter == "Failed" ? "active" : "")">❌ Failed</a>
+    </div>
+
+    <div class="db-txn-list">
+        @if (!Model.Transactions.Any())
+        {
+            <div style="text-align:center;padding:3rem;color:#3A4060;font-size:13px;">
+                No transactions found. <a href="@Url.Action("Send","Transfer")" style="color:#4F8EF7;">Make your first transfer →</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var txn in Model.Transactions)
+            {
+                <div class="db-txn-row">
+                    <div class="db-txn-icon @txn.IconClass">@txn.IconSymbol</div>
+                    <div class="db-txn-info">
+                        <div class="db-txn-name">@txn.Description</div>
+                        <div class="db-txn-id">@txn.SerialNumber · @txn.Date.ToString("MMM dd, yyyy · hh:mm tt")</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="db-txn-amount @txn.AmountClass">@txn.FormattedAmount</div>
+                        <div class="db-txn-status"><span class="db-badge-pill @txn.StatusClass">@txn.Status</span></div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div style="display:flex;justify-content:center;gap:8px;margin-top:1.5rem;">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="@Url.Action("Index", new { page = i, status = Model.StatusFilter, type = Model.TypeFilter })"
+                   style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;text-decoration:none;
+                      background:@(i == Model.CurrentPage ? "linear-gradient(135deg,#4F8EF7,#7B5FFF)" : "#111420");
+                      border:1px solid @(i == Model.CurrentPage ? "transparent" : "#1A1E30");
+                      color:@(i == Model.CurrentPage ? "white" : "#5A6080");">
+                    @i
+                </a>
+            }
+        </div>
+    }
+
+    <style>
+        .filter-pill {
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            text-decoration: none;
+            background: #111420;
+            border: 1px solid #1A1E30;
+            color: #5A6080;
+            transition: all .2s;
+        }
+
+            .filter-pill.active {
+                background: #151A30;
+                border-color: #4F8EF7;
+                color: #7B9FFF;
+            }
+
+            .filter-pill:hover {
+                border-color: #3A4570;
+                color: #9AAAE0;
+            }
+    </style>
+
+}

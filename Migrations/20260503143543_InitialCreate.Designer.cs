@@ -9,10 +9,10 @@ using SwiftPay.Data;
 
 #nullable disable
 
-namespace Money_Trasnfer_Application.Migrations
+namespace SwiftPay.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260427185535_InitialCreate")]
+    [Migration("20260503143543_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -407,7 +407,7 @@ namespace Money_Trasnfer_Application.Migrations
                             FromCurrency = "USD",
                             Rate = 1.8m,
                             ToCurrency = "EUR",
-                            UpdatedAt = new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(6552)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -415,7 +415,7 @@ namespace Money_Trasnfer_Application.Migrations
                             FromCurrency = "USD",
                             Rate = 2.2m,
                             ToCurrency = "LBP",
-                            UpdatedAt = new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7365)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -423,7 +423,7 @@ namespace Money_Trasnfer_Application.Migrations
                             FromCurrency = "EUR",
                             Rate = 1.5m,
                             ToCurrency = "GBP",
-                            UpdatedAt = new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7367)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -431,7 +431,7 @@ namespace Money_Trasnfer_Application.Migrations
                             FromCurrency = "AED",
                             Rate = 1.9m,
                             ToCurrency = "USD",
-                            UpdatedAt = new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7368)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         },
                         new
                         {
@@ -439,7 +439,7 @@ namespace Money_Trasnfer_Application.Migrations
                             FromCurrency = "SAR",
                             Rate = 2.0m,
                             ToCurrency = "EUR",
-                            UpdatedAt = new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7370)
+                            UpdatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 

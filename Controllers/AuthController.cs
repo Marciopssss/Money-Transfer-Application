@@ -142,7 +142,7 @@ namespace SwiftPay.Controllers
             return View("Login", new LoginViewModel { CurrencyOptions = GetCurrencyOptions() });
         }
 
-        // ── POST: /Auth/Logout ───────────────────────────────────
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
@@ -151,21 +151,18 @@ namespace SwiftPay.Controllers
             return RedirectToAction("Login");
         }
 
-        // ── GET: /Auth/ForgotPassword ────────────────────────────
         [HttpGet]
         public IActionResult ForgotPassword()
         {
             return View();
         }
 
-        // ── GET: /Auth/AccessDenied ──────────────────────────────
         [HttpGet]
         public IActionResult AccessDenied()
         {
             return View();
         }
 
-        // ── Helpers ──────────────────────────────────────────────
         private List<SelectListItem> GetCurrencyOptions()
         {
             return new List<SelectListItem>

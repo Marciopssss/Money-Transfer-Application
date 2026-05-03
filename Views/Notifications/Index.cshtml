@@ -1,0 +1,46 @@
+﻿@* File: Views/Notifications/Index.cshtml *@
+@model List<SwiftPay.Models.Notification>
+@{
+    ViewData["Title"] = "Notifications";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Notifications</div>
+            <div class="db-date">@Model.Count(n => !n.IsRead) unread</div>
+        </div>
+    </div>
+
+    <div class="db-txn-list">
+        @if (!Model.Any())
+        {
+                <div style="text-align:center;padding:3rem;color:#3A4060;font-size:13px;">No notifications yet.</div>
+        }
+        else
+        {
+            @foreach (var n in Model)
+            {
+                        <div class="db-txn-row" style="@(!n.IsRead ? "background:#12162A;" : "")">
+                            <div class="db-txn-icon @(n.Type == SwiftPay.Models.NotificationType.TransferUpdate ? "send" : n.Type == SwiftPay.Models.NotificationType.TopUp ? "topup" : "recv")"
+                                 style="font-size:16px;">
+                        @(n.Type == SwiftPay.Models.NotificationType.TransferUpdate ? "↗" :
+                              n.Type == SwiftPay.Models.NotificationType.TopUp ? "+" : "🔔")
+                            </div>
+                            <div class="db-txn-info">
+                                <div class="db-txn-name" style="@(!n.IsRead ? "color:#E8EAFF;" : "")">@n.Title</div>
+                                <div style="font-size:12px;color:#5A6080;margin-top:3px;">@n.Message</div>
+                                <div class="db-txn-id" style="margin-top:4px;">@n.CreatedAt.ToString("MMM dd, yyyy · hh:mm tt")</div>
+                            </div>
+                    @if (!n.IsRead)
+                    {
+                                    <div style="width:8px;height:8px;border-radius:50%;background:#4F8EF7;flex-shrink:0;"></div>
+                    }
+                        </div>
+            }
+        }
+    </div>
+
+}

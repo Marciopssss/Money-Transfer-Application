@@ -1,5 +1,4 @@
-﻿// File: ViewModels/DashboardViewModel.cs
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace SwiftPay.ViewModels
 {
@@ -33,11 +32,11 @@ namespace SwiftPay.ViewModels
         public string Description { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public string FormattedAmount { get; set; } = string.Empty;
-        public string AmountClass { get; set; } = string.Empty;  // send / recv / topup
+        public string AmountClass { get; set; } = string.Empty; 
         public string IconClass { get; set; } = string.Empty;
         public string IconSymbol { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-        public string StatusClass { get; set; } = string.Empty;  // completed / pending / failed
+        public string StatusClass { get; set; } = string.Empty;  
         public DateTime Date { get; set; }
     }
 }

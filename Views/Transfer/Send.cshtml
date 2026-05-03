@@ -1,0 +1,173 @@
+﻿@model SwiftPay.ViewModels.SendMoneyViewModel
+@{
+    ViewData["Title"] = "Send Money";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+<div class="db-topbar">
+    <div>
+        <div class="db-greeting">Send Money</div>
+        <div class="db-date">Balance: <strong style="color:#3EC98E;">@Model.Balance.ToString("C")</strong> · @Model.AccountSerial</div>
+    </div>
+</div>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div style="background:rgba(240,96,96,0.08);border:1px solid rgba(240,96,96,0.2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;color:#F06060;font-size:13px;">
+        <asp-validation-summary asp-validation-type="All" />
+    </div>
+}
+
+<div style="max-width:560px;">
+    <form asp-action="Send" asp-controller="Transfer" method="post">
+        @Html.AntiForgeryToken()
+
+        <!-- Transfer Method Toggle -->
+        <div class="db-section-title">Transfer Method</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;">
+            <label style="cursor:pointer;">
+                    <input type="radio" asp-for="Method" value="Beneficiary" style="display:none;" onchange="toggleMethod()" id="method-bene" />                <div class="method-btn @(Model.Method == SwiftPay.ViewModels.TransferMethod.Beneficiary ? "active" : "")" id="btn-bene">
+                    <div style="font-size:22px;margin-bottom:6px;">👤</div>
+                    <div style="font-size:13px;font-weight:600;">To Beneficiary</div>
+                    <div style="font-size:11px;color:#5A6080;margin-top:3px;">Account to account</div>
+                </div>
+            </label>
+            <label style="cursor:pointer;">
+                    <input type="radio" asp-for="Method" value="Mobile" style="display:none;" onchange="toggleMethod()" id="method-mobile" />                <div class="method-btn @(Model.Method == SwiftPay.ViewModels.TransferMethod.Mobile ? "active" : "")" id="btn-mobile">
+                    <div style="font-size:22px;margin-bottom:6px;">📱</div>
+                    <div style="font-size:13px;font-weight:600;">By Mobile</div>
+                    <div style="font-size:11px;color:#5A6080;margin-top:3px;">Similar to OMT</div>
+                </div>
+            </label>
+        </div>
+
+        <!-- Beneficiary Section -->
+        <div id="section-beneficiary" style="@(Model.Method == SwiftPay.ViewModels.TransferMethod.Mobile ? "display:none;" : "")">
+            <label class="ft-label">Select Beneficiary</label>
+            <select asp-for="BeneficiaryId" asp-items="Model.BeneficiaryOptions" class="send-select">
+                <option value="">— Choose a beneficiary —</option>
+            </select>
+            <span asp-validation-for="BeneficiaryId" class="ft-field-error"></span>
+            <a href="@Url.Action("Add","Beneficiaries")" style="font-size:12px;color:#4F8EF7;display:block;margin-top:-0.8rem;margin-bottom:1.2rem;">+ Add new beneficiary</a>
+        </div>
+
+        <!-- Mobile Section -->
+        <div id="section-mobile" style="@(Model.Method == SwiftPay.ViewModels.TransferMethod.Beneficiary ? "display:none;" : "")">
+            <label class="ft-label">Receiver Name</label>
+            <input asp-for="ReceiverName" class="send-input" type="text" placeholder="Full name of receiver" />
+            <span asp-validation-for="ReceiverName" class="ft-field-error"></span>
+
+            <label class="ft-label">Mobile Number</label>
+            <input asp-for="ReceiverMobileNumber" class="send-input" type="tel" placeholder="+961 xx xxx xxx" />
+            <span asp-validation-for="ReceiverMobileNumber" class="ft-field-error"></span>
+        </div>
+
+        <!-- Amount + Currency -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+                <label class="ft-label">Amount</label>
+                <input asp-for="Amount" class="send-input" type="number" step="0.01" min="0.01" placeholder="0.00" oninput="calcConversion()" />
+                <span asp-validation-for="Amount" class="ft-field-error"></span>
+            </div>
+            <div>
+                <label class="ft-label">From Currency</label>
+                <select asp-for="FromCurrency" asp-items="Model.CurrencyOptions" class="send-select" onchange="calcConversion()"></select>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <div>
+                <label class="ft-label">To Currency</label>
+                <select asp-for="ToCurrency" asp-items="Model.CurrencyOptions" class="send-select" onchange="calcConversion()"></select>
+            </div>
+            <div>
+                <label class="ft-label">Notes (optional)</label>
+                <input asp-for="Notes" class="send-input" type="text" placeholder="e.g. Rent payment" />
+            </div>
+        </div>
+
+        <!-- Conversion Preview -->
+        <div id="conversion-box" style="background:#0D0F1A;border:1px solid #1E2236;border-radius:12px;padding:1rem 1.2rem;margin-bottom:1.5rem;display:none;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:12px;color:#4A5070;">You send</span>
+                <span style="font-size:13px;color:#E8EAFF;font-family:'Space Mono',monospace;" id="preview-send">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:12px;color:#4A5070;">Exchange rate</span>
+                <span style="font-size:13px;color:#7B9FFF;font-family:'Space Mono',monospace;" id="preview-rate">—</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                <span style="font-size:12px;color:#4A5070;">Commission (1.8%)</span>
+                <span style="font-size:13px;color:#FFB432;font-family:'Space Mono',monospace;" id="preview-commission">—</span>
+            </div>
+            <div style="height:1px;background:#1E2236;margin:8px 0;"></div>
+            <div style="display:flex;justify-content:space-between;">
+                <span style="font-size:12px;color:#4A5070;">Receiver gets</span>
+                <span style="font-size:14px;color:#3EC98E;font-weight:600;font-family:'Space Mono',monospace;" id="preview-receive">—</span>
+            </div>
+        </div>
+
+        <button type="submit" class="ft-btn">Send Money →</button>
+    </form>
+</div>
+
+<style>
+.send-input {
+    width:100%; background:#0D0F1A; border:1px solid #1E2236; border-radius:10px;
+    padding:12px 14px; color:#C8CEEA; font-family:'Sora',sans-serif; font-size:14px;
+    outline:none; margin-bottom:1.2rem; transition:border-color .2s; box-sizing:border-box;
+}
+.send-input:focus { border-color:#4F8EF7; }
+.send-input::placeholder { color:#3A4060; }
+.send-select {
+    width:100%; background:#0D0F1A; border:1px solid #1E2236; border-radius:10px;
+    padding:12px 14px; color:#C8CEEA; font-family:'Sora',sans-serif; font-size:14px;
+    outline:none; margin-bottom:1.2rem; appearance:none; cursor:pointer; box-sizing:border-box;
+}
+.send-select option { background:#111420; }
+.method-btn {
+    background:#111420; border:1px solid #1A1E30; border-radius:12px;
+    padding:1.2rem; text-align:center; color:#5A6080; transition:all .2s;
+}
+.method-btn.active { border-color:#4F8EF7; color:#7B9FFF; background:#12162A; }
+</style>
+
+<script>
+const rates = {
+    'USD_EUR':0.92,'EUR_USD':1.09,'USD_GBP':0.79,'GBP_USD':1.27,
+    'USD_LBP':89500,'LBP_USD':0.0000112,'USD_AED':3.67,'AED_USD':0.27,
+    'USD_SAR':3.75,'SAR_USD':0.27,'EUR_GBP':0.86,'GBP_EUR':1.16
+};
+
+function calcConversion() {
+    const amount = parseFloat(document.querySelector('[name="Amount"]').value);
+    const from   = document.querySelector('[name="FromCurrency"]').value;
+    const to     = document.querySelector('[name="ToCurrency"]').value;
+    const box    = document.getElementById('conversion-box');
+
+    if (!amount || amount <= 0) { box.style.display='none'; return; }
+
+    const key  = from + '_' + to;
+    const rate = from === to ? 1 : (rates[key] || 1);
+    const commission = amount * 0.018;
+    const converted  = amount * rate;
+
+    document.getElementById('preview-send').textContent       = amount.toFixed(2) + ' ' + from;
+    document.getElementById('preview-rate').textContent       = '1 ' + from + ' = ' + rate + ' ' + to;
+    document.getElementById('preview-commission').textContent = commission.toFixed(2) + ' ' + from;
+    document.getElementById('preview-receive').textContent    = converted.toFixed(2) + ' ' + to;
+    box.style.display = 'block';
+}
+
+function toggleMethod() {
+    const isMobile = document.getElementById('method-mobile').checked;
+    document.getElementById('section-beneficiary').style.display = isMobile ? 'none' : '';
+    document.getElementById('section-mobile').style.display      = isMobile ? '' : 'none';
+    document.getElementById('btn-bene').classList.toggle('active', !isMobile);
+    document.getElementById('btn-mobile').classList.toggle('active', isMobile);
+}
+</script>
+
+}

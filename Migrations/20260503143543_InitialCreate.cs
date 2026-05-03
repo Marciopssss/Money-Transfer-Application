@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Money_Trasnfer_Application.Migrations
+namespace SwiftPay.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -396,11 +396,11 @@ namespace Money_Trasnfer_Application.Migrations
                 columns: new[] { "Id", "FromCurrency", "Rate", "ToCurrency", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, "USD", 1.8m, "EUR", new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(6552) },
-                    { 2, "USD", 2.2m, "LBP", new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7365) },
-                    { 3, "EUR", 1.5m, "GBP", new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7367) },
-                    { 4, "AED", 1.9m, "USD", new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7368) },
-                    { 5, "SAR", 2.0m, "EUR", new DateTime(2026, 4, 27, 18, 55, 34, 666, DateTimeKind.Utc).AddTicks(7370) }
+                    { 1, "USD", 1.8m, "EUR", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 2, "USD", 2.2m, "LBP", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 3, "EUR", 1.5m, "GBP", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 4, "AED", 1.9m, "USD", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) },
+                    { 5, "SAR", 2.0m, "EUR", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) }
                 });
 
             migrationBuilder.InsertData(

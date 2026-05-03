@@ -1,0 +1,60 @@
+﻿@model SwiftPay.ViewModels.TransferConfirmViewModel
+@{
+    ViewData["Title"] = "Transfer Receipt";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div style="max-width:480px;margin:0 auto;">
+
+        <div style="text-align:center;margin-bottom:2rem;">
+            <div style="font-size:48px;margin-bottom:12px;">✅</div>
+            <div class="db-greeting">Transfer Successful!</div>
+            <div class="db-date">Your money is on its way</div>
+        </div>
+
+        <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Reference</span>
+                <span style="font-size:12px;font-family:'Space Mono',monospace;color:#7B9FFF;">@Model.SerialNumber</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Receiver</span>
+                <span style="font-size:12px;color:#C8D0EC;font-weight:500;">@Model.ReceiverName</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Amount Sent</span>
+                <span style="font-size:12px;font-family:'Space Mono',monospace;color:#F06060;">@Model.Amount.ToString("C") @Model.FromCurrency</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Exchange Rate</span>
+                <span style="font-size:12px;font-family:'Space Mono',monospace;color:#7B9FFF;">1 @Model.FromCurrency = @Model.ExchangeRate @Model.ToCurrency</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Commission</span>
+                <span style="font-size:12px;font-family:'Space Mono',monospace;color:#FFB432;">@Model.CommissionAmount.ToString("C") @Model.FromCurrency</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Receiver Gets</span>
+                <span style="font-size:14px;font-family:'Space Mono',monospace;color:#3EC98E;font-weight:700;">@Model.ConvertedAmount.ToString("C") @Model.ToCurrency</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #141728;">
+                <span style="font-size:12px;color:#4A5070;">Status</span>
+                <span class="db-badge-pill completed">@Model.Status</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;">
+                <span style="font-size:12px;color:#4A5070;">Date</span>
+                <span style="font-size:12px;color:#C8D0EC;">@Model.CreatedAt.ToString("MMM dd, yyyy · hh:mm tt")</span>
+            </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <a href="@Url.Action("Send","Transfer")" class="ft-btn" style="text-align:center;">Send Again</a>
+            <a href="@Url.Action("Index","Dashboard")" class="ft-btn" style="background:#1A1E34;border:1px solid #2A2E50;color:#7B9FFF;text-align:center;">Dashboard</a>
+        </div>
+
+    </div>
+
+}

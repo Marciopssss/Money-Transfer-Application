@@ -1,5 +1,4 @@
-﻿// File: Controllers/DashboardController.cs
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,17 +23,14 @@ namespace SwiftPay.Controllers
             _context = context;
         }
 
-        // ── GET: /Dashboard ──────────────────────────────────────
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Auth");
 
-            // Get user's primary account
             var account = await _context.Accounts
                 .FirstOrDefaultAsync(a => a.UserId == user.Id && a.IsActive);
 
-            // Get recent transactions (last 5)
             var transactions = account != null
                 ? await _context.Transactions
                     .Where(t => t.SenderAccountId == account.Id || t.ReceiverAccountId == account.Id)
@@ -43,7 +39,6 @@ namespace SwiftPay.Controllers
                     .ToListAsync()
                 : new List<Transaction>();
 
-            // Calculate monthly stats
             var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
             var startOfLastMonth = startOfMonth.AddMonths(-1);
 
@@ -74,7 +69,6 @@ namespace SwiftPay.Controllers
             var unreadNotifications = await _context.Notifications
                 .CountAsync(n => n.UserId == user.Id && !n.IsRead);
 
-            // Build transaction rows
             var txnRows = transactions.Select(t =>
             {
                 bool isSend = account != null && t.SenderAccountId == account.Id;

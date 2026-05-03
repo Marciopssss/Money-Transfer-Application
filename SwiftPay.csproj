@@ -4,7 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>Money_Trasnfer_Application</RootNamespace>
+    <RootNamespace>SwiftPay</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,5 +1,4 @@
-﻿// File: Controllers/AdminController.cs
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +20,6 @@ namespace SwiftPay.Controllers
             _userManager = userManager;
         }
 
-        // ── GET: /Admin ──────────────────────────────────────────
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -31,7 +29,6 @@ namespace SwiftPay.Controllers
             var startOfMonth = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
             var startOfLastMonth = startOfMonth.AddMonths(-1);
 
-            // KPI data
             var totalVolume = await _context.Transactions
                 .Where(t => t.Status == TransactionStatus.Completed)
                 .SumAsync(t => (decimal?)t.Amount) ?? 0;
@@ -61,7 +58,6 @@ namespace SwiftPay.Controllers
                 .Where(t => t.Status == TransactionStatus.Completed && t.CreatedAt >= startOfMonth)
                 .SumAsync(t => (decimal?)t.CommissionAmount) ?? 0;
 
-            // Pending agent requests
             var pendingAgentRequests = await _context.Agents
                 .Where(a => a.Status == AgentStatus.Pending)
                 .Include(a => a.User)
@@ -77,7 +73,6 @@ namespace SwiftPay.Controllers
                 })
                 .ToListAsync();
 
-            // Commission rates
             var commissionRates = await _context.CommissionRates
                 .Select(c => new CommissionRateViewModel
                 {
@@ -89,7 +84,6 @@ namespace SwiftPay.Controllers
                 })
                 .ToListAsync();
 
-            // Recent transactions
             var recentTxns = await _context.Transactions
                 .Include(t => t.SenderAccount).ThenInclude(a => a.User)
                 .OrderByDescending(t => t.CreatedAt)
@@ -109,7 +103,6 @@ namespace SwiftPay.Controllers
                 })
                 .ToListAsync();
 
-            // Set pending agents badge in ViewBag for sidebar
             ViewBag.PendingAgents = pendingAgents;
 
             var model = new AdminDashboardViewModel
@@ -130,7 +123,6 @@ namespace SwiftPay.Controllers
             return View(model);
         }
 
-        // ── POST: /Admin/ApproveAgent ────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveAgent(int agentId)
@@ -145,7 +137,6 @@ namespace SwiftPay.Controllers
             return RedirectToAction("Index");
         }
 
-        // ── POST: /Admin/RejectAgent ─────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectAgent(int agentId)
@@ -159,7 +150,6 @@ namespace SwiftPay.Controllers
             return RedirectToAction("Index");
         }
 
-        // ── GET: /Admin/EditCommission ───────────────────────────
         [HttpGet]
         public async Task<IActionResult> EditCommission(int id)
         {
@@ -168,7 +158,6 @@ namespace SwiftPay.Controllers
             return View(rate);
         }
 
-        // ── POST: /Admin/EditCommission ──────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditCommission(CommissionRate model)
@@ -184,7 +173,6 @@ namespace SwiftPay.Controllers
             return RedirectToAction("Index");
         }
 
-        // ── GET: /Admin/ExportTransactions ───────────────────────
         public async Task<IActionResult> ExportTransactions()
         {
             var txns = await _context.Transactions
@@ -199,7 +187,6 @@ namespace SwiftPay.Controllers
             return File(System.Text.Encoding.UTF8.GetBytes(csv), "text/csv", "transactions.csv");
         }
 
-        // ── Helper ───────────────────────────────────────────────
         private static string GetFlag(string currency) => currency switch
         {
             "USD" => "🇺🇸",

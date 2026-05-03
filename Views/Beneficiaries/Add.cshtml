@@ -1,0 +1,77 @@
+﻿@* File: Views/Beneficiaries/Add.cshtml *@
+@model SwiftPay.ViewModels.AddBeneficiaryViewModel
+@{
+    ViewData["Title"] = "Add Beneficiary";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Add Beneficiary</div>
+            <div class="db-date">Save a recipient for quick transfers</div>
+        </div>
+    </div>
+
+    <div style="max-width:500px;">
+        <form asp-action="Add" method="post">
+            @Html.AntiForgeryToken()
+
+            <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+
+                <label class="ft-label">Full Name *</label>
+                <input asp-for="FullName" class="send-input" placeholder="e.g. Omar Khalil" />
+                <span asp-validation-for="FullName" class="ft-field-error"></span>
+
+                <label class="ft-label">Email</label>
+                <input asp-for="Email" class="send-input" type="email" placeholder="optional" />
+                <span asp-validation-for="Email" class="ft-field-error"></span>
+
+                <label class="ft-label">Mobile Number</label>
+                <input asp-for="MobileNumber" class="send-input" type="tel" placeholder="+961 xx xxx xxx" />
+                <span asp-validation-for="MobileNumber" class="ft-field-error"></span>
+
+                <label class="ft-label">SwiftPay Account Serial</label>
+                <input asp-for="AccountSerial" class="send-input" placeholder="e.g. SP-2024-12345 (if SwiftPay user)" />
+
+                <label class="ft-label">Bank Name</label>
+                <input asp-for="BankName" class="send-input" placeholder="optional" />
+
+                <label class="ft-label">IBAN</label>
+                <input asp-for="IBAN" class="send-input" placeholder="optional" />
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <button type="submit" class="ft-btn">Save Beneficiary</button>
+                <a href="@Url.Action("Index")" class="ft-btn" style="background:#1A1E34;border:1px solid #2A2E50;color:#7B9FFF;text-align:center;">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        .send-input {
+            width: 100%;
+            background: #0D0F1A;
+            border: 1px solid #1E2236;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #C8CEEA;
+            font-family: 'Sora',sans-serif;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 1.2rem;
+            transition: border-color .2s;
+            box-sizing: border-box;
+        }
+
+            .send-input:focus {
+                border-color: #4F8EF7;
+            }
+
+            .send-input::placeholder {
+                color: #3A4060;
+            }
+    </style>
+
+}

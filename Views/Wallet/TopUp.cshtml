@@ -1,0 +1,111 @@
+﻿@* File: Views/Wallet/TopUp.cshtml *@
+@model SwiftPay.ViewModels.TopUpViewModel
+@{
+    ViewData["Title"] = "Top Up";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Top Up Wallet</div>
+            <div class="db-date">Current Balance: <strong style="color:#3EC98E;">@ViewBag.Balance.ToString("C")</strong> · @ViewBag.AccountSerial</div>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="background:rgba(62,201,142,0.08);border:1px solid rgba(62,201,142,0.2);border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;color:#3EC98E;font-size:13px;">
+            ✅ @TempData["Success"]
+        </div>
+    }
+
+    <div style="max-width:500px;">
+
+        <!-- Quick amount buttons -->
+        <div class="db-section-title">Quick Amount</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem;">
+            @foreach (var amt in new[] { 100, 250, 500, 1000 })
+            {
+                <button type="button" onclick="setAmount(@amt)"
+                        style="background:#111420;border:1px solid #1A1E30;border-radius:10px;padding:12px;color:#C8D0EC;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .2s;"
+                        onmouseover="this.style.borderColor='#4F8EF7'" onmouseout="this.style.borderColor='#1A1E30'">
+                    $@amt
+                </button>
+            }
+        </div>
+
+        <form method="post" action="/Wallet/TopUp">
+            @Html.AntiForgeryToken()
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div style="background:rgba(240,96,96,0.08);border:1px solid rgba(240,96,96,0.2);border-radius:10px;padding:12px 14px;margin-bottom:1.5rem;color:#F06060;font-size:13px;">
+                    <asp-validation-summary asp-validation-type="All" />
+                </div>
+            }
+
+            <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
+
+                <label class="ft-label">Amount to Add</label>
+                <input name="Amount" id="amount-input" class="send-input" type="number" step="0.01" min="1" max="50000" placeholder="0.00" />
+
+                <div style="height:1px;background:#1A1E30;margin:1rem 0;"></div>
+
+                <label class="ft-label">Card Number</label>
+                <input name="CardNumber" class="send-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ft-label">Expiry Date</label>
+                        <input name="CardExpiry" class="send-input" type="text" placeholder="MM/YY" maxlength="5" />
+                    </div>
+                    <div>
+                        <label class="ft-label">CVC</label>
+                        <input name="CardCvc" class="send-input" type="text" placeholder="123" maxlength="4" />
+                    </div>
+                </div>
+
+                <div style="background:#0D0F1A;border:1px solid #1E2236;border-radius:10px;padding:10px 14px;margin-top:0.5rem;">
+                    <div style="font-size:11px;color:#3A4060;margin-bottom:4px;">🔒 Secured by Stripe</div>
+                    <div style="font-size:11px;color:#3A4060;">Your card details are encrypted and never stored on our servers.</div>
+                </div>
+            </div>
+
+            <button type="submit" class="ft-btn">Add Funds →</button>
+        </form>
+    </div>
+
+    <style>
+        .send-input {
+            width: 100%;
+            background: #0D0F1A;
+            border: 1px solid #1E2236;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: #C8CEEA;
+            font-family: 'Sora',sans-serif;
+            font-size: 14px;
+            outline: none;
+            margin-bottom: 1.2rem;
+            transition: border-color .2s;
+            box-sizing: border-box;
+        }
+
+            .send-input:focus {
+                border-color: #4F8EF7;
+            }
+
+            .send-input::placeholder {
+                color: #3A4060;
+            }
+    </style>
+
+    <script>
+        function setAmount(val) {
+            document.getElementById('amount-input').value = val;
+        }
+    </script>
+
+}
