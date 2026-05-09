@@ -24,10 +24,35 @@
     </div>
 
     <div class="db-balance-card">
-        <div class="db-bal-label">Available Balance</div>
-        <div class="db-bal-amount">@Model.Balance.ToString("C", Model.CultureInfo)</div>
-        <div class="db-bal-acct">Acct # @Model.AccountSerial</div>
-        <div class="db-bal-actions">
+        <div class="db-bal-label">Your Wallets</div>
+
+        @foreach (var acc in Model.Accounts)
+        {
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div>
+                    <div style="font-family:'Space Mono',monospace;font-size:22px;color:#E8EAFF;font-weight:700;">
+                        @acc.Balance.ToString("N2") @acc.Currency
+                    </div>
+                    <div style="font-size:11px;color:#3A4570;font-family:'Space Mono',monospace;">
+                        @acc.SerialNumber
+                    </div>
+                </div>
+                <div style="font-size:28px;">
+                    @(acc.Currency == "USD" ? "🇺🇸" :
+                        acc.Currency == "EUR" ? "🇪🇺" :
+                        acc.Currency == "GBP" ? "🇬🇧" :
+                        acc.Currency == "LBP" ? "🇱🇧" :
+                        acc.Currency == "AED" ? "🇦🇪" :
+                        acc.Currency == "SAR" ? "🇸🇦" : "💰")
+                </div>
+            </div>
+            @if (Model.Accounts.IndexOf(acc) < Model.Accounts.Count - 1)
+            {
+                <div style="height:1px;background:rgba(255,255,255,0.05);margin-bottom:10px;"></div>
+            }
+        }
+
+        <div class="db-bal-actions" style="margin-top:1.2rem;">
             <a href="@Url.Action("TopUp","Wallet")" class="db-bal-btn primary">+ Add Funds</a>
             <a href="@Url.Action("Send","Transfer")" class="db-bal-btn secondary">↗ Send Money</a>
             <a href="@Url.Action("Exchange","Wallet")" class="db-bal-btn secondary">⇄ Exchange</a>
@@ -37,14 +62,14 @@
     <div class="db-stats">
         <div class="db-stat">
             <div class="db-stat-label">Sent this month</div>
-            <div class="db-stat-val down">@Model.MonthlySent.ToString("C", Model.CultureInfo)</div>
+            <div class="db-stat-val down">@Model.MonthlySent.ToString("N2") @Model.PreferredCurrency</div>
             <div class="db-stat-trend" style="color:#F06060;">
                 @(Model.SentChangePercent > 0 ? "↑" : "↓") @Math.Abs(Model.SentChangePercent)% vs last month
             </div>
         </div>
         <div class="db-stat">
             <div class="db-stat-label">Received this month</div>
-            <div class="db-stat-val up">@Model.MonthlyReceived.ToString("C", Model.CultureInfo)</div>
+            <div class="db-stat-val up">@Model.MonthlyReceived.ToString("N2") @Model.PreferredCurrency</div>
             <div class="db-stat-trend" style="color:#3EC98E;">
                 @(Model.ReceivedChangePercent > 0 ? "↑" : "↓") @Math.Abs(Model.ReceivedChangePercent)% vs last month
             </div>

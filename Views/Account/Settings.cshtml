@@ -1,0 +1,124 @@
+﻿@* File: Views/Account/Settings.cshtml *@
+@model SwiftPay.ViewModels.SettingsViewModel
+@{
+    ViewData["Title"] = "Settings";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+@section PageContent {
+
+    <div class="db-topbar">
+        <div>
+            <div class="db-greeting">Settings</div>
+            <div class="db-date">Manage your account preferences</div>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div style="background:rgba(62,201,142,0.08);border:1px solid rgba(62,201,142,0.2);border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;color:#3EC98E;font-size:13px;">
+            ✅ @TempData["Success"]
+        </div>
+    }
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ft-error-box" style="margin-bottom:1.5rem;">
+            @foreach (var state in ViewData.ModelState.Values)
+            {
+                @foreach (var error in state.Errors)
+                {
+                    <div>⚠️ @error.ErrorMessage</div>
+                }
+            }
+        </div>
+    }
+
+    <!-- Account Info Card -->
+    <div style="background:linear-gradient(135deg,#151A35,#1A1040);border:1px solid #2A2E50;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1.2rem;">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#4F8EF7,#7B5FFF);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;flex-shrink:0;">
+            @Model.FirstName.Substring(0, 1).ToUpper()@Model.LastName.Substring(0, 1).ToUpper()
+        </div>
+        <div>
+            <div style="font-size:16px;font-weight:600;color:#E8EAFF;">@Model.FirstName @Model.LastName</div>
+            <div style="font-size:12px;color:#3A4060;font-family:'Space Mono',monospace;margin-top:2px;">@Model.AccountSerial</div>
+            <div style="font-size:11px;color:#3A4060;margin-top:2px;">Member since @Model.MemberSince.ToString("MMMM yyyy")</div>
+        </div>
+        <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:11px;color:#4A5070;text-transform:uppercase;letter-spacing:1px;">Balance</div>
+            <div style="font-size:20px;font-weight:700;color:#3EC98E;font-family:'Space Mono',monospace;">@Model.Balance.ToString("C")</div>
+        </div>
+    </div>
+
+    <div style="max-width:560px;">
+        <form method="post" action="/Account/Settings">
+            @Html.AntiForgeryToken()
+
+            <!-- Profile Section -->
+            <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.2rem;">
+                <div style="font-size:13px;font-weight:600;color:#7A83A8;text-transform:uppercase;letter-spacing:1px;margin-bottom:1.2rem;">👤 Profile</div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="ft-label">First Name</label>
+                        <input name="FirstName" class="send-input" type="text" value="@Model.FirstName" />
+                    </div>
+                    <div>
+                        <label class="ft-label">Last Name</label>
+                        <input name="LastName" class="send-input" type="text" value="@Model.LastName" />
+                    </div>
+                </div>
+
+                <label class="ft-label">Email Address</label>
+                <input class="send-input" type="email" value="@Model.Email" disabled style="opacity:0.5;cursor:not-allowed;" />
+                <div style="font-size:11px;color:#3A4060;margin-top:-1rem;margin-bottom:1.2rem;">Email cannot be changed</div>
+
+                <label class="ft-label">Phone Number</label>
+                <input name="PhoneNumber" class="send-input" type="tel" value="@Model.PhoneNumber" placeholder="+961 xx xxx xxx" />
+
+                <label class="ft-label">Preferred Currency</label>
+                <select name="PreferredCurrency" class="send-select">
+                    @{
+                        var currencies = new[] {
+                ("USD","🇺🇸 USD — US Dollar"),
+                ("EUR","🇪🇺 EUR — Euro"),
+                ("GBP","🇬🇧 GBP — British Pound"),
+                ("LBP","🇱🇧 LBP — Lebanese Pound"),
+                ("AED","🇦🇪 AED — UAE Dirham"),
+                ("SAR","🇸🇦 SAR — Saudi Riyal")
+                };
+                    }
+                    @foreach (var c in currencies)
+                    {
+                        if (Model.PreferredCurrency == c.Item1)
+                        {
+                            <option value="@c.Item1" selected="selected">@c.Item2</option>
+                        }
+                        else
+                        {
+                            <option value="@c.Item1">@c.Item2</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <!-- Password Section -->
+            <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.2rem;">
+                <div style="font-size:13px;font-weight:600;color:#7A83A8;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">🔒 Change Password</div>
+                <div style="font-size:11px;color:#3A4060;margin-bottom:1.2rem;">Leave blank if you don't want to change your password</div>
+
+                <label class="ft-label">Current Password</label>
+                <input name="CurrentPassword" class="send-input" type="password" placeholder="Enter current password" />
+
+                <label class="ft-label">New Password</label>
+                <input name="NewPassword" class="send-input" type="password" placeholder="Min. 8 characters" />
+
+                <label class="ft-label">Confirm New Password</label>
+                <input name="ConfirmNewPassword" class="send-input" type="password" placeholder="Repeat new password" />
+            </div>
+
+            <button type="submit" class="ft-btn">Save Changes</button>
+        </form>
+    </div>
+
+}

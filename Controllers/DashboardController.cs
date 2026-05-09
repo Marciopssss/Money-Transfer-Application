@@ -28,8 +28,10 @@ namespace SwiftPay.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Login", "Auth");
 
-            var account = await _context.Accounts
-                .FirstOrDefaultAsync(a => a.UserId == user.Id && a.IsActive);
+            var accounts = await _context.Accounts
+                .Where(a => a.UserId == user.Id && a.IsActive)
+                .ToListAsync();
+            var account = accounts.FirstOrDefault();
 
             var transactions = account != null
                 ? await _context.Transactions
@@ -89,6 +91,7 @@ namespace SwiftPay.Controllers
                 };
             }).ToList();
 
+
             var model = new DashboardViewModel
             {
                 FirstName = user.FirstName,
@@ -103,10 +106,25 @@ namespace SwiftPay.Controllers
                 SentChangePercent = lastMonthSent > 0 ? (int)(((monthlySent - lastMonthSent) / lastMonthSent) * 100) : 0,
                 ReceivedChangePercent = lastMonthReceived > 0 ? (int)(((monthlyReceived - lastMonthReceived) / lastMonthReceived) * 100) : 0,
                 UnreadNotifications = unreadNotifications,
-                RecentTransactions = txnRows
+                RecentTransactions = txnRows,
+                Accounts = accounts.Select(a => new AccountBalanceViewModel
+                {
+                    Currency = a.Currency,
+                    Balance = a.Balance,
+                    SerialNumber = a.SerialNumber
+                }).ToList()
             };
 
             return View(model);
         }
+        private static CultureInfo GetCultureForCurrency(string currency) => currency switch
+        {
+            "EUR" => CultureInfo.GetCultureInfo("fr-FR"),
+            "GBP" => CultureInfo.GetCultureInfo("en-GB"),
+            "LBP" => CultureInfo.GetCultureInfo("ar-LB"),
+            "AED" => CultureInfo.GetCultureInfo("ar-AE"),
+            "SAR" => CultureInfo.GetCultureInfo("ar-SA"),
+            _ => CultureInfo.GetCultureInfo("en-US")  // USD default
+        };
     }
 }

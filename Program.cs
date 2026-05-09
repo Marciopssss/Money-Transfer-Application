@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using SwiftPay.Data;
 using SwiftPay.Models;
 
@@ -11,6 +12,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
+
+builder.Services.Configure<StripeSettings>(
+    builder.Configuration.GetSection("Stripe"));
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>

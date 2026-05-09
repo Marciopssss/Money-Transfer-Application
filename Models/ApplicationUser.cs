@@ -1,5 +1,4 @@
-﻿// File: Models/ApplicationUser.cs
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 namespace SwiftPay.Models
 {

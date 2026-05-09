@@ -24,6 +24,9 @@ namespace SwiftPay.ViewModels
             DateTime.Now.Hour < 17 ? "afternoon" : "evening";
 
         public List<TransactionRowViewModel> RecentTransactions { get; set; } = new();
+
+        // FIXED: moved inside DashboardViewModel
+        public List<AccountBalanceViewModel> Accounts { get; set; } = new();
     }
 
     public class TransactionRowViewModel
@@ -32,11 +35,18 @@ namespace SwiftPay.ViewModels
         public string Description { get; set; } = string.Empty;
         public decimal Amount { get; set; }
         public string FormattedAmount { get; set; } = string.Empty;
-        public string AmountClass { get; set; } = string.Empty; 
+        public string AmountClass { get; set; } = string.Empty;
         public string IconClass { get; set; } = string.Empty;
         public string IconSymbol { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
-        public string StatusClass { get; set; } = string.Empty;  
+        public string StatusClass { get; set; } = string.Empty;
         public DateTime Date { get; set; }
+    }
+
+    public class AccountBalanceViewModel
+    {
+        public string Currency { get; set; } = string.Empty;
+        public decimal Balance { get; set; }
+        public string SerialNumber { get; set; } = string.Empty;
     }
 }
