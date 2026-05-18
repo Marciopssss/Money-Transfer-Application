@@ -8,7 +8,7 @@ namespace SwiftPay.ViewModels
         [Range(1, 50000, ErrorMessage = "Amount must be between $1 and $50,000")]
         public decimal Amount { get; set; }
 
-        // Stripe fields (used in production)
+        public string? StripeToken { get; set; }
         public string? CardNumber { get; set; }
         public string? CardExpiry { get; set; }
         public string? CardCvc { get; set; }

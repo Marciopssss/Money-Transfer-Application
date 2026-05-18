@@ -6,6 +6,7 @@ using SwiftPay.Data;
 using SwiftPay.Models;
 using SwiftPay.ViewModels;
 using Stripe;
+using Account = SwiftPay.Models.Account;
 
 namespace SwiftPay.Controllers
 {
