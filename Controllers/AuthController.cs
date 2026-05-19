@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SwiftPay.Data;
 using SwiftPay.Models;
 using SwiftPay.ViewModels;
+using System.Security.Claims;
 
 namespace SwiftPay.Controllers
 {
@@ -149,6 +150,84 @@ namespace SwiftPay.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+
+        // ── POST: /Auth/ExternalLogin ─────────────────────────────────
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ExternalLogin(string provider, string? returnUrl = null)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Auth", new { returnUrl });
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            return Challenge(properties, provider);
+        }
+
+        // ── GET: /Auth/ExternalLoginCallback ────────────────────────
+        [HttpGet]
+        public async Task<IActionResult> ExternalLoginCallback(string? returnUrl = null)
+        {
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return RedirectToAction("Login");
+
+            // Try to sign in with existing external login
+            var result = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider, info.ProviderKey, isPersistent: false);
+
+            if (result.Succeeded)
+                return RedirectToLocal(returnUrl);
+
+            // No existing account — create one automatically
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+            var firstName = info.Principal.FindFirstValue(ClaimTypes.GivenName) ?? "";
+            var lastName = info.Principal.FindFirstValue(ClaimTypes.Surname) ?? "";
+
+            if (email == null)
+            {
+                ModelState.AddModelError("", "Could not retrieve email from external provider.");
+                return RedirectToAction("Login");
+            }
+
+            // Check if user with this email already exists
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    FirstName = firstName,
+                    LastName = lastName,
+                    PreferredCurrency = "USD", // default
+                    Role = UserRole.User,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                var createResult = await _userManager.CreateAsync(user);
+                if (!createResult.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to create account.");
+                    return RedirectToAction("Login");
+                }
+
+                // Create a wallet account for the new user
+                var account = new Account
+                {
+                    UserId = user.Id,
+                    SerialNumber = GenerateAccountSerial(),
+                    Currency = "USD",
+                    Balance = 0,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.Accounts.Add(account);
+                await _context.SaveChangesAsync();
+            }
+
+            // Link this external login to the user
+            await _userManager.AddLoginAsync(user, info);
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToLocal(returnUrl);
         }
 
         [HttpGet]

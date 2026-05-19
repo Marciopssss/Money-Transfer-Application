@@ -290,3 +290,24 @@ body {
 .hidden {
     display: none;
 }
+
+.ft-social-btn {
+    background: #0D0F1A;
+    border: 1px solid #1E2236;
+    border-radius: 10px;
+    padding: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #7A83A8;
+    cursor: pointer;
+    transition: border-color .2s;
+    font-family: 'Sora', sans-serif;
+    width: 100%;
+}
+
+    .ft-social-btn:hover {
+        border-color: #3A4570;
+    }
