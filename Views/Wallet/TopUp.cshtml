@@ -3,14 +3,19 @@
 @{
     ViewData["Title"] = "Top Up";
     Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    var publishableKey = ViewBag.StripePublishableKey as string ?? "";
+    var balance = (decimal)(ViewBag.Balance ?? 0m);
+    var accountSerial = (string)(ViewBag.AccountSerial ?? "N/A");
 }
 
 @section PageContent {
 
+    <script src="https://js.stripe.com/v3/"></script>
+
     <div class="db-topbar">
         <div>
             <div class="db-greeting">Top Up Wallet</div>
-            <div class="db-date">Current Balance: <strong style="color:#3EC98E;">@ViewBag.Balance.ToString("C")</strong> · @ViewBag.AccountSerial</div>
+            <div class="db-date">Current Balance: <strong style="color:#3EC98E;">@balance.ToString("C")</strong> · @accountSerial</div>
         </div>
     </div>
 
@@ -21,90 +26,108 @@
         </div>
     }
 
-    <div style="max-width:500px;">
-
-        <!-- Quick amount buttons -->
-        <div class="db-section-title">Quick Amount</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem;">
-            @foreach (var amt in new[] { 100, 250, 500, 1000 })
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ft-error-box" style="margin-bottom:1.5rem;">
+            @foreach (var state in ViewData.ModelState.Values)
             {
-                <button type="button" onclick="setAmount(@amt)"
-                        style="background:#111420;border:1px solid #1A1E30;border-radius:10px;padding:12px;color:#C8D0EC;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .2s;"
-                        onmouseover="this.style.borderColor='#4F8EF7'" onmouseout="this.style.borderColor='#1A1E30'">
-                    $@amt
-                </button>
+                @foreach (var error in state.Errors)
+                {
+                    <div>⚠️ @error.ErrorMessage</div>
+                }
             }
         </div>
+    }
 
-        <form method="post" action="/Wallet/TopUp">
+    <!-- Quick amount buttons -->
+    <div class="db-section-title">Quick Amount</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:1.5rem;">
+        @foreach (var amt in new[] { 100, 250, 500, 1000 })
+        {
+            <button type="button" onclick="setAmount(@amt)"
+                    style="background:#111420;border:1px solid #1A1E30;border-radius:10px;padding:12px;color:#C8D0EC;font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .2s;"
+                    onmouseover="this.style.borderColor='#4F8EF7'" onmouseout="this.style.borderColor='#1A1E30'">
+                $@amt
+            </button>
+        }
+    </div>
+
+    <div style="max-width:500px;">
+        <form id="topup-form" method="post" action="/Wallet/TopUp">
             @Html.AntiForgeryToken()
-
-            @if (!ViewData.ModelState.IsValid)
-            {
-                <div style="background:rgba(240,96,96,0.08);border:1px solid rgba(240,96,96,0.2);border-radius:10px;padding:12px 14px;margin-bottom:1.5rem;color:#F06060;font-size:13px;">
-                    <asp-validation-summary asp-validation-type="All" />
-                </div>
-            }
+            <input type="hidden" name="Amount" id="amount-hidden" value="0" />
+            <input type="hidden" name="StripeToken" id="stripe-token" />
 
             <div style="background:#111420;border:1px solid #1A1E30;border-radius:16px;padding:1.5rem;margin-bottom:1.5rem;">
 
                 <label class="ft-label">Amount to Add</label>
-                <input name="Amount" id="amount-input" class="send-input" type="number" step="0.01" min="1" max="50000" placeholder="0.00" />
+                <input id="amount-input" class="send-input" type="number"
+                       step="0.01" min="1" max="50000" placeholder="0.00"
+                       oninput="document.getElementById('amount-hidden').value = this.value" />
 
                 <div style="height:1px;background:#1A1E30;margin:1rem 0;"></div>
 
-                <label class="ft-label">Card Number</label>
-                <input name="CardNumber" class="send-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" />
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                    <div>
-                        <label class="ft-label">Expiry Date</label>
-                        <input name="CardExpiry" class="send-input" type="text" placeholder="MM/YY" maxlength="5" />
-                    </div>
-                    <div>
-                        <label class="ft-label">CVC</label>
-                        <input name="CardCvc" class="send-input" type="text" placeholder="123" maxlength="4" />
-                    </div>
+                <label class="ft-label">Card Details</label>
+                <div id="card-element"
+                     style="background:#0D0F1A;border:1px solid #1E2236;border-radius:10px;padding:13px 14px;margin-bottom:0.5rem;">
                 </div>
+                <div id="card-errors" style="color:#F06060;font-size:12px;margin-bottom:1rem;min-height:18px;"></div>
 
-                <div style="background:#0D0F1A;border:1px solid #1E2236;border-radius:10px;padding:10px 14px;margin-top:0.5rem;">
+                <div style="background:#0D0F1A;border:1px solid #1E2236;border-radius:10px;padding:10px 14px;">
                     <div style="font-size:11px;color:#3A4060;margin-bottom:4px;">🔒 Secured by Stripe</div>
                     <div style="font-size:11px;color:#3A4060;">Your card details are encrypted and never stored on our servers.</div>
                 </div>
             </div>
 
-            <button type="submit" class="ft-btn">Add Funds →</button>
+            <button type="submit" class="ft-btn" id="submit-btn">Add Funds →</button>
         </form>
     </div>
 
-    <style>
-        .send-input {
-            width: 100%;
-            background: #0D0F1A;
-            border: 1px solid #1E2236;
-            border-radius: 10px;
-            padding: 12px 14px;
-            color: #C8CEEA;
-            font-family: 'Sora',sans-serif;
-            font-size: 14px;
-            outline: none;
-            margin-bottom: 1.2rem;
-            transition: border-color .2s;
-            box-sizing: border-box;
-        }
-
-            .send-input:focus {
-                border-color: #4F8EF7;
-            }
-
-            .send-input::placeholder {
-                color: #3A4060;
-            }
-    </style>
-
     <script>
+        var stripe = Stripe('@publishableKey');
+        var elements = stripe.elements();
+
+        var cardElement = elements.create('card', {
+            style: {
+                base: {
+                    color: '#C8CEEA',
+                    fontFamily: 'Sora, sans-serif',
+                    fontSize: '14px',
+                    '::placeholder': { color: '#3A4060' }
+                },
+                invalid: { color: '#F06060' }
+            }
+        });
+
+        cardElement.mount('#card-element');
+
+        cardElement.on('change', function(event) {
+            var errors = document.getElementById('card-errors');
+            errors.textContent = event.error ? event.error.message : '';
+        });
+
+        document.getElementById('topup-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            var btn = document.getElementById('submit-btn');
+            btn.textContent = 'Processing...';
+            btn.disabled = true;
+
+            stripe.createToken(cardElement).then(function(result) {
+                if (result.error) {
+                    document.getElementById('card-errors').textContent = result.error.message;
+                    btn.textContent = 'Add Funds →';
+                    btn.disabled = false;
+                } else {
+                    document.getElementById('stripe-token').value = result.token.id;
+                    document.getElementById('topup-form').submit();
+                }
+            });
+        });
+
         function setAmount(val) {
             document.getElementById('amount-input').value = val;
+            document.getElementById('amount-hidden').value = val;
         }
     </script>
 

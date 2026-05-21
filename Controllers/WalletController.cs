@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿// File: Controllers/WalletController.cs
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Stripe;
 using SwiftPay.Data;
 using SwiftPay.Models;
 using SwiftPay.ViewModels;
-using Stripe;
 using Account = SwiftPay.Models.Account;
 
 namespace SwiftPay.Controllers
@@ -15,13 +17,19 @@ namespace SwiftPay.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
-        public WalletController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public WalletController(
+            AppDbContext context,
+            UserManager<ApplicationUser> userManager,
+            IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
+        // ── GET: /Wallet/TopUp ───────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> TopUp()
         {
@@ -33,9 +41,11 @@ namespace SwiftPay.Controllers
 
             ViewBag.Balance = account?.Balance ?? 0;
             ViewBag.AccountSerial = account?.SerialNumber ?? "N/A";
+            ViewBag.StripePublishableKey = _configuration["Stripe:PublishableKey"];
             return View(new TopUpViewModel());
         }
 
+        // ── POST: /Wallet/TopUp ──────────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> TopUp(TopUpViewModel model)
@@ -56,12 +66,11 @@ namespace SwiftPay.Controllers
 
             try
             {
-                // Create Stripe charge using the token from the form
                 var options = new ChargeCreateOptions
                 {
-                    Amount = (long)(model.Amount * 100), // Stripe uses cents
+                    Amount = (long)(model.Amount * 100),
                     Currency = account.Currency.ToLower(),
-                    Source = model.StripeToken,          // token from frontend
+                    Source = model.StripeToken,
                     Description = $"SwiftPay Top Up — {account.SerialNumber}"
                 };
 
@@ -109,6 +118,7 @@ namespace SwiftPay.Controllers
             }
         }
 
+        // ── GET: /Wallet/Exchange ────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> Exchange()
         {
@@ -129,7 +139,7 @@ namespace SwiftPay.Controllers
             return View(model);
         }
 
-  
+        // ── POST: /Wallet/Exchange ───────────────────────────────
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Exchange(ExchangeViewModel model)
@@ -162,10 +172,10 @@ namespace SwiftPay.Controllers
             var rate = GetExchangeRate(model.FromCurrency, model.ToCurrency);
             var converted = model.Amount * rate;
 
-         
+            // Debit from source account
             fromAccount.Balance -= model.Amount;
 
-           
+            // Find or create target currency account
             var toAccount = accounts.FirstOrDefault(a => a.Currency == model.ToCurrency);
             if (toAccount == null)
             {
@@ -186,7 +196,6 @@ namespace SwiftPay.Controllers
                 toAccount.Balance += converted;
             }
 
-            
             _context.Transactions.Add(new Transaction
             {
                 SerialNumber = $"EXC-{DateTime.UtcNow.Year}-{new Random().Next(10000, 99999)}",
@@ -213,7 +222,7 @@ namespace SwiftPay.Controllers
             return View(model);
         }
 
-       
+        // ── Helper ───────────────────────────────────────────────
         private static decimal GetExchangeRate(string from, string to)
         {
             if (from == to) return 1m;
